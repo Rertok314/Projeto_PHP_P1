@@ -1,0 +1,157 @@
+Um mini sistema CRUD chamado UserManager :
+O Sistema deve criar usuário , Listar usuários , Editar usuário , Excluir usuário
+Observação : Caso não tenham os arquivos / PATHS indicados é preciso a criação deles !
+ 
+ 1. Criar projeto
+composer create - projeto laravel / gerenciador de usuários laravel
+gerenciador de usuários cd
+php artesanal serve
+ 
+2. Banco de dados
+• Não . env :
+DB_DATABASE = gerenciador de usuários
+DB_USERNAME = root
+SENHA_DB =
+• Para criação do Banco e Tabelas possíveis :
+CRIAR BANCO DE DADOS usermanager ;
+ 
+CRIAR TABELA user_profiles (
+id BIGINT AUTO_INCREMENT PRIMARY KEY ,
+nome VARCHAR ( 255 ) ,
+email VARCHAR ( 255 ) ,
+criado_em TIMESTAMP NULL ,
+atualizado_em TIMESTAMP NULL
+) ;
+ 
+3. Modelo + Migração​
+php artisan migrar    
+     #OBS: como criaremos as nossas tabelas esse migrar é feito apenas uma vez, ao iniciar o projeto.
+ 
+php artisan make : modelo UserProfile - m
+ 
+#deve estar nesse caminho app/Models/UserProfile.php
+classe UserProfile estende Model
+{
+    protected  $fillable  =  [ 'nome' ,  'email' ] ;
+}
+ 
+ 
+4. Controlador​
+php artisan make : controller UserProfileController
+ 
+#deve estar em Controllers -> UserProfileController
+use App\Models\UserProfile ;
+use Illuminate\Http\Request ;
+ 
+classe UserProfileController estende Controller
+{
+     índice de função pública ( )
+    {
+        $users  = UserProfile :: all ( ) ;
+        retornar view ( 'users.index' ,  compact ( 'users' ) ) ;
+    }
+ 
+     função pública criar ( )
+    {
+        retornar view ( 'users.create' ) ;
+    }
+ 
+     função pública armazenar ( Solicitação $request )
+    {
+        UserProfile :: criar ( $request -> all ( ) ) ;
+        retornar redirecionar ( '/' ) ;
+    }
+ 
+     função pública editar ( $id )
+    {
+        $user  = UserProfile :: findOrFail ( $id ) ;
+        retornar view ( 'users.edit' ,  compact ( 'user' ) ) ;
+    }
+ 
+     função pública atualizar ( Solicitação $request ,  $id )
+    {
+        $user  = UserProfile :: findOrFail ( $id ) ;
+        $user- > update ( $request- > all ( ) ) ;
+        retornar redirecionar ( '/' ) ;
+    }
+ 
+     função pública destruir ( $id )
+    {
+        UserProfile :: findOrFail ( $id ) -> delete ( ) ;
+        retornar redirecionar ( '/' ) ;
+    }
+}
+ 
+ 
+ 5. Rotas​
+#Deve estar nesse caminho Routes/web.php
+use App\Http\Controllers\UserProfileController ;
+ 
+Rota :: obter ( '/' ,  [ UserProfileController :: classe ,  'index' ] ) ;
+Rota :: obter ( '/criar' ,  [ UserProfileController :: classe ,  'criar' ] ) ;
+Rota :: post ( '/store' ,  [ UserProfileController :: class ,  'store' ] ) ;
+Rota :: obter ( '/edit/{id}' ,  [ UserProfileController :: classe ,  'edit' ] ) ;
+Rota :: post ( '/update/{id}' ,  [ UserProfileController :: class ,  'update' ] ) ;
+Rota :: excluir ( '/excluir/{id}' ,  [ UserProfileController :: classe ,  'destruir' ] ) ;
+ 
+7. Visualizações​
+#Deve estar em Views -> index.blade.php
+< h1 > Usuários </ h1 >
+ 
+< a href = "/create" > Novo Usuário </ a >
+ 
+< ul >
+@foreach ( $ users  as  $user )
+    < li >
+        { {  $user -> nome  } }  -  { {  $user -> email  } }
+ 
+        <a href="/edit/{{ $user-> id } } " > Editar </a>​​​
+ 
+        < form action = "/delete/{{ $user->id }}" method = "POST" style = "display:inline;" >
+            @ csrf
+            @ método ( 'DELETE' )
+            < button type = " submit " > Excluir </button>
+        </ formulário >
+    </ li >
+@ fimparacada
+</ul>​​
+ 
+ 
+#Deve estar em Views -> create.blade.php
+ 
+< h1 > Novo Usuário </ h1 >
+ 
+< form action = "/store" method = "POST" >
+    @ csrf
+    < input type = "text" name = "name" placeholder = "Nome" >
+    < input type = "email" name = "email" placeholder = "Email" >
+    < button type = " submit " > Salvar </button>
+</ formulário >
+ 
+ 
+#Deve estar em Views -> edit.blade.php
+ 
+< h1 > Editar Usuário </ h1 >
+ 
+< form action = "/update/{{ $user->id }}" method = "POST" >
+    @ csrf
+    < input type = "text" name = "name" value = "{{ $user->name }}" >
+    < input type = "email" name = "email" value = "{{ $user->email }}" >
+    < button type = " submit " > Atualizar </button>
+</ formulário >
+ 
+ 
+ 
+Para levantar o projeto :
+ 
+php artisan config : clear && php artisan cache : clear && php artisan optimize && php artisan route : clear && php artisan serve
+ 
+ 
+ 
+Formas de Entrega :
+ 
+    Opção 1 :  ( 2 , 0 pontos ) NO AVA disponibilizar uma pasta ZIPADA contendo um arquivo TXT com o Link  do repositório do projeto funcional +  Imprimir de todas as telas funcionando com exemplos ( para isso é preciso realizar testes de usuário )  +  Imprimir as tabelas preenchidas
+ 
+OU
+ 
+    Opção 2 :  ( 1 , 5 pontos ) NO AVA disponibilizar uma pasta ZIPADA contendo o projeto funcional ZIPADO +  Imprimir de todas as telas funcionando com exemplos ( para isso é preciso realizar testes de usuário )  +  Imprimir das tabelas preenchidas
